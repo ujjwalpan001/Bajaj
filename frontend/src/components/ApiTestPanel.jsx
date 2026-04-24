@@ -7,7 +7,7 @@
 import { useState } from "react";
 
 const DEFAULT_BODY = JSON.stringify({ data: ["A->B", "A->C", "B->D"] }, null, 2);
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_BASE = import.meta.env.VITE_API_URL || "https://bajaj-obji.onrender.com";
 
 export default function ApiTestPanel() {
   const [method, setMethod]   = useState("POST");
@@ -96,7 +96,7 @@ export default function ApiTestPanel() {
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900/60 text-slate-800 dark:text-slate-100 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500/40 min-w-0"
-          placeholder="http://localhost:5000/bfhl"
+          placeholder="https://bajaj-obji.onrender.com/bfhl"
         />
 
         {/* Send button */}

@@ -10,7 +10,7 @@ import ResultsPanel from "./components/ResultsPanel";
 import ApiTestPanel from "./components/ApiTestPanel";
 import Spinner from "./components/Spinner";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_BASE = import.meta.env.VITE_API_URL || "https://bajaj-obji.onrender.com";
 
 const APP_TABS = [
   { id: "analyzer", icon: "⚡", label: "Analyzer"   },
