@@ -121,6 +121,9 @@ export default function App() {
 
       {/* ── Main content ───────────────────────────────────────────────────── */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-6 rounded-xl border border-amber-300/70 bg-amber-50/90 dark:border-amber-700/60 dark:bg-amber-900/20 px-4 py-3 text-sm text-amber-800 dark:text-amber-200">
+          ⏳ First request may take a few seconds as the server wakes up (free hosting).
+        </div>
 
         {/* ── ANALYZER TAB ─────────────────────────────────────────────────── */}
         {appTab === "analyzer" && (
