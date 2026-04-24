@@ -1,18 +1,19 @@
 /**
  * @file server.js
  * @description Main Express application entry point.
- * Configures middleware, CORS, routes, and starts the HTTP server.
+ * Configures middleware (CORS, body parsing, logging, timing), routes, and error handling.
  */
 
 import express from "express";
 import cors from "cors";
 import bfhlRouter from "./routes/bfhl.js";
+import { requestLogger } from "./middleware/logger.js";
+import { requestTimer } from "./middleware/timer.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ── CORS ──────────────────────────────────────────────────────────────────────
-// Allows requests from any origin (dev + prod). Tighten in production if needed.
 app.use(
   cors({
     origin: "*",
@@ -21,22 +22,27 @@ app.use(
   })
 );
 
+// ── Timing (must be before routes so req._startTime is set early) ─────────────
+app.use(requestTimer);
+
 // ── Body parsing ──────────────────────────────────────────────────────────────
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// ── Request logger (lightweight) ───────────────────────────────────────────────
-app.use((req, _res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-  next();
-});
+// ── HTTP request logger ───────────────────────────────────────────────────────
+app.use(requestLogger);
 
 // ── Routes ────────────────────────────────────────────────────────────────────
 app.use("/bfhl", bfhlRouter);
 
 // ── Root health check ─────────────────────────────────────────────────────────
 app.get("/", (_req, res) => {
-  res.json({ status: "OK", message: "BFHL API Server is running." });
+  res.json({
+    status: "OK",
+    message: "BFHL API Server is running.",
+    version: "1.0.0",
+    endpoints: { "POST /bfhl": "Process hierarchical node relationships" },
+  });
 });
 
 // ── 404 handler ───────────────────────────────────────────────────────────────
@@ -45,6 +51,7 @@ app.use((_req, res) => {
 });
 
 // ── Global error handler ──────────────────────────────────────────────────────
+// eslint-disable-next-line no-unused-vars
 app.use((err, _req, res, _next) => {
   console.error("[Global Error]", err.stack);
   res.status(500).json({ error: "Unexpected server error." });
@@ -52,7 +59,8 @@ app.use((err, _req, res, _next) => {
 
 // ── Start server ──────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`✅  BFHL API running on http://localhost:${PORT}`);
+  console.log(`\n✅  BFHL API running  →  http://localhost:${PORT}`);
+  console.log(`📋  POST /bfhl  ·  GET /bfhl\n`);
 });
 
 export default app;
